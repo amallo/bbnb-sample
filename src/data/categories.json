@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Homes",
+    "photo": "homesCategory"
+  },
+  {
+    "name": "Experiences",
+    "photo": "experiencesCategory"
+  },
+  {
+    "name": "Restaurants",
+    "photo": "restaurantsCategory"
+  }
+]
