@@ -1,4 +1,4 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 const initialState = {
   categories: [],
   experiences: [],
@@ -10,10 +10,10 @@ const listingsReducer = (state = initialState, action) => {
     case 'SET_LISTINGS':
       return {
         ...state,
-        categories: action.payload.categories,
-        experiences: action.payload.experiences.listings,
-        homes: action.payload.homes.listings,
-        popular: action.payload.popular.listings,
+        //categories: action.payload.categories,
+        experiences: action.payload,
+        //homes: action.payload.homes.listings,
+        //popular: action.payload.popular.listings,
       };
     default:
       return state;
