@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import MainScreen from './src/screens/Main';
-import reducers from './src/reducers';
-import { createStore } from 'redux';
+import { store, persistor } from './src/store';
 import { Provider } from 'react-redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-const store = createStore(reducers, composeWithDevTools());
+import { PersistGate } from 'redux-persist/integration/react'
+
+
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <MainScreen />
+        <PersistGate loading={null} persistor={persistor}>
+          <MainScreen />
+        </PersistGate>
       </Provider>
     );
   }
