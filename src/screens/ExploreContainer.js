@@ -9,7 +9,6 @@ import styles from './styles';
 import { connect } from 'react-redux';
 import Categories from '../components/categories'; //Intégration du composants Catégories
 import Experiences from '../components/experiences';
-import Loading from '../components/Loading';
 import Homes from '../components/homes';
 import Popular from '../components/popular';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -62,7 +61,6 @@ class ExploreContainer extends Component {
     const { categories, experiences, homes, popular, isLoading } = this.props;
     return (
       <View style={{ flex: 1 }}>
-        <Loading animating={isLoading} />
         <ScrollView>
           <View>
             <Text style={styles.titres}>Explore Airbnb</Text>

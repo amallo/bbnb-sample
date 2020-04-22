@@ -3,7 +3,6 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import stylesCo from './stylesCo';
 import Input from '../components/Input'; //Intégration du composants Input
-import Loading from '../components/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from "../actions"
 import { connect } from 'react-redux';
@@ -80,7 +79,6 @@ class Login extends Component {
     const { isLoading } = this.props
     return (
       <View style={stylesCo.structGlobal}>
-        <Loading animating={isLoading} />
         <Text style={stylesCo.titre}>Connexion</Text>
         <Input
           title={'Adresse e-mail'}
