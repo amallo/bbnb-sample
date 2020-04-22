@@ -52,7 +52,7 @@ export default class Input extends Component {
           {textContentType === 'password' && (
             <TouchableOpacity
               onPress={this.toggleSecureTextEntry}>
-              <Text style={styles.textShowPassword}>{secureTextEntry ? 'Masquer' : 'Afficher'}</Text>
+              <Text style={styles.textShowPassword}>{secureTextEntry ? 'Afficher' : 'Masquer'}</Text>
             </TouchableOpacity>
           )}
         </View>
