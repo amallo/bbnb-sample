@@ -4,7 +4,7 @@ export const Types = {
 };
 export const Actions = {
   setListings: results => ({
-    type: Types.SetListings,
+    type: Types.SET_LISTINGS,
     payload: results,
   }),
   loading: (isLoading) => ({

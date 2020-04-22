@@ -39,17 +39,21 @@ class ExploreContainer extends Component {
 
     //Récupération des données contenus dans l'URL
     return fetch('https://my-json-server.typicode.com/amallo/bbnb-sample/blob/master/experiences') // requête vers l'API
+      .then((response) => {
+        // Si un code erreur a été détecté on déclenche une erreur
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then(response => response.json())
       .then(response => {
         // On cache le loading spinner à la fin de la requête
         loading(false)
-
-        // On stocke les résultats si la requête a bien été exécuté
-        // response.ok vaut true si la requête a renvoyé un code 4XX (404, 403, etc)
-        if (response.ok) {
-          setListings(response.json());
-        }
+        setListings(response);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log('An error occured', err)
         // En cas d'erreur on cache le loading spinner également
         loading(false)
       })
