@@ -3,11 +3,14 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import stylesCo from './stylesCo';
 import Input from '../components/Input'; //Intégration du composants Input
+import Loading from '../components/Loading';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Actions } from "../actions"
+import { connect } from 'react-redux';
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
-    displayPassword: false,
+    displayPassword: true,
     email: '',
     password: ''
   };
@@ -33,7 +36,8 @@ export default class Login extends Component {
     })
   }
   login = () => {
-    console.log('do login...')
+    const { loading } = this.props
+    loading(true)
     const { password, email } = this.state
     return fetch('https://bbnb-booking.now.sh/api/users/signIn', {
       method: 'POST',
@@ -46,20 +50,37 @@ export default class Login extends Component {
         password,
       }),
     })
-      .then((response) => response.json())
       .then((response) => {
-        // sauvegarde du token dans le local storage
+        // Si un code erreur a été détecté on déclenche une erreur
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      // Pas d'erreurs on décode le json
+      .then(response => response.json())
+
+      .then((response) => {
+        loading(false)
+        // Sauvegarde du token dans le local storage
         return AsyncStorage
           .setItem('userToken', response.authorization)
           .then(() => {
             this.props.navigation.navigate('ExploreContainer')
           })
+
       })
-      .catch((err) => console.log('cannot login in', err))
+      // Toutes les erreurs sont traitées dans le catch
+      .catch((err) => {
+        console.log('cannot login in', err)
+        loading(false)
+      })
   }
   render() {
+    const { isLoading } = this.props
     return (
       <View style={stylesCo.structGlobal}>
+        <Loading animating={isLoading} />
         <Text style={stylesCo.titre}>Connexion</Text>
         <Input
           title={'Adresse e-mail'}
@@ -80,3 +101,11 @@ export default class Login extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  isLoading: state.app.isLoading,
+});
+
+const mapDispatchToProps = dispatch => ({
+  loading: (isLoading) => dispatch(Actions.loading(isLoading)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
