@@ -26,34 +26,40 @@ class ExploreContainer extends Component {
       </View>
     )
   });
-  // Initial state
-  state = {
-    isLoading: true // Controls the display of the animation
-  }
+
+  /**
+   * Nous n'avons plus besoin d'initialiser un state local au component.
+   * isLoading erst 
+   */
 
   componentDidMount() {
-    const { setListings } = this.props;
+    const { setListings, loading } = this.props;
+
+    // Affichage du loading spinner par l'appel de l'action loading()
+    loading(true)
 
     //Récupération des données contenus dans l'URL
     return fetch('https://my-json-server.typicode.com/amallo/bbnb-sample/blob/master/experiences') // requête vers l'API
-      .then(response => response.json())
-      .then(results => {
-        this.setState({
-          isLoading: false
-        })
-        setListings(results);
+      .then(response => {
+        // On cache le loading spinner à la fin de la requête
+        loading(false)
+
+        // On stocke les résultats si la requête a bien été exécuté
+        // response.ok vaut true si la requête a renvoyé un code 4XX (404, 403, etc)
+        if (response.ok) {
+          setListings(response.json());
+        }
       })
       .catch(() => {
-        this.setState({
-          isLoading: false
-        })
+        // En cas d'erreur on cache le loading spinner également
+        loading(false)
       })
   }
 
 
   render() {
-    const { categories, experiences, homes, popular } = this.props;
-    const { isLoading } = this.state
+    // isLoading est maintenant chargé depuis le reducer
+    const { categories, experiences, homes, popular, isLoading } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Loading animating={isLoading} />
@@ -88,9 +94,11 @@ const mapStateToProps = state => ({
   experiences: state.listings.experiences,
   homes: state.listings.homes,
   popular: state.listings.popular,
+  isLoading: state.app.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
   setListings: results => dispatch(Actions.setListings(results)),
+  loading: (isLoading) => dispatch(Actions.loading(isLoading)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ExploreContainer);
