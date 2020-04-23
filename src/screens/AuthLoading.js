@@ -1,8 +1,10 @@
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import SplashScreen from 'react-native-splash-screen'
 
 export default class AuthLoadingScreen extends React.Component {
     componentDidMount() {
+        SplashScreen.hide();
         this._bootstrapAsync();
     }
 
