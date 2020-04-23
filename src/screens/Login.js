@@ -3,19 +3,30 @@ import { Text, View, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import stylesCo from './stylesCo';
 import Input from '../components/Input'; //Intégration du composants Input
+import Error from '../components/Error'; //Intégration du composants Input
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Actions } from "../actions"
 import { connect } from 'react-redux';
 
+import { login } from "../services"
+
+const MAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+const ERR_EMAIL_INVALID = 'ERR_EMAIL_INVALID'
+const ERR_LOGIN_INVALID = 'ERR_LOGIN_INVALID'
+
+const ErrorMessages = {
+  [ERR_EMAIL_INVALID]: 'Email non valide !',
+  [ERR_LOGIN_INVALID]: 'Identification impossible : le couple email/mot de passe est introuvable.'
+}
 class Login extends Component {
   state = {
-    displayPassword: true,
     email: '',
-    password: ''
+    password: '',
+    error: null
   };
 
   static navigationOptions = ({ navigation }) => ({
-    header: props => (
+    header: () => (
       <View style={stylesCo.containerConnect}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon size={20} style={stylesCo.iconclose} name="arrow-left"></Icon>
@@ -34,34 +45,34 @@ class Login extends Component {
       password
     })
   }
+  validateAndFocus = () => {
+    const { email } = this.state
+    if (MAIL_REGEXP.test(email) === false) {
+      this.setState({ error: ERR_EMAIL_INVALID });
+    } else {
+      this.setState({ error: null });
+      this.refPassword.focus()
+    }
+  };
   login = () => {
     const { loading } = this.props
-    loading(true)
     const { password, email } = this.state
-    return fetch('https://bbnb-booking.now.sh/api/users/signIn', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-      .then((response) => {
-        // Si un code erreur a été détecté on déclenche une erreur
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      // Pas d'erreurs on décode le json
-      .then(response => response.json())
 
+    // On affiche le loader
+    loading(true)
+
+    return login(email, password)
       .then((response) => {
+
+        // On cache le loader
         loading(false)
-        // Sauvegarde du token dans le local storage
+
+        // On efface les erreurs
+        this.setState({
+          error: null
+        })
+
+        // On sauvegarde du token dans le local storage
         return AsyncStorage
           .setItem('userToken', response.authorization)
           .then(() => {
@@ -69,32 +80,51 @@ class Login extends Component {
           })
 
       })
+
       // Toutes les erreurs sont traitées dans le catch
-      .catch((err) => {
-        console.log('cannot login in', err)
+      .catch(() => {
+
+        // On cache le loader
         loading(false)
+
+        // On stocke d'erreur
+        this.setState({
+          error: ERR_LOGIN_INVALID
+        })
+        alert(ErrorMessages[ERR_LOGIN_INVALID])
+
       })
   }
   render() {
-    const { isLoading } = this.props
+    const { error } = this.state
+    const isValidEmail = error == ERR_EMAIL_INVALID
     return (
-      <View style={stylesCo.structGlobal}>
+      <View style={stylesCo.structGlobal} >
         <Text style={stylesCo.titre}>Connexion</Text>
         <Input
+          ref={ref => { this.refEmail = ref }}
+          onSubmitEditing={this.validateAndFocus}
+          onBlur={this.validateAndFocus}
           title={'Adresse e-mail'}
           textContentType={'emailAddress'}
           onChangeText={this.onChangeEmail}
-          placeholder={"Saississez un e-mail"} />
+          placeholder={"Saisissez un e-mail"} />
+        <Error message={error ? ErrorMessages[error] : null} />
         <Input
+          ref={ref => { this.refPassword = ref }}
           title={'Mot de passe'}
           textContentType={'password'}
           onChangeText={this.onChangePassword}
-          placeholder={"Saississez un mot de passe"} />
-        <TouchableOpacity
-          onPress={this.login}
-          style={stylesCo.scrollArrow}>
-          <Icon size={35} style={stylesCo.icongo} name="angle-right"></Icon>
-        </TouchableOpacity>
+          placeholder={"Saisissez un mot de passe"} />
+
+        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+          <TouchableOpacity
+            disabled={!isValidEmail}
+            onPress={this.login}>
+            <Icon size={35} style={isValidEmail ? stylesCo.icongo : { color: 'gray' }} name="angle-right"></Icon>
+          </TouchableOpacity>
+        </View>
+
       </View>
     );
   }

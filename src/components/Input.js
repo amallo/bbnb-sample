@@ -12,20 +12,7 @@ export default class Input extends Component {
       pressValid: false,
     };
   }
-  validate = textEmail => {
-    console.log(textEmail);
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(textEmail) === false) {
-      // alert('Email is Not Correct');
-      console.log('Email is Not Correct');
-      this.setState({ email: 'Email non valide !' });
-      return false;
-    } else {
-      // alert('Email is Correct');
-      this.setState({ email: '' });
-      console.log('Email is Correct');
-    }
-  };
+
   emailValid = () => {
     this.setState({
       pressValid: !this.state.pressValid,
@@ -36,19 +23,18 @@ export default class Input extends Component {
       secureTextEntry: !this.state.secureTextEntry
     });
   }
+  focus = () => {
+    this.refInput.focus()
+  }
 
   render() {
-    const { textContentType, onChangeText, placeholder } = this.props;
+    const { textContentType, onChangeText, placeholder, onSubmitEditing, onBlur } = this.props;
     const { secureTextEntry } = this.state;
     return (
       <View style={[styles.champ]}>
         <View style={[styles.flex]}>
           <Text style={[styles.textLabel]}>{this.props.title}</Text>
-          {textContentType === 'emailAddress' && (
-            <TouchableOpacity onPress={this.emailValid}>
-              <Text style={[styles.textShowPassword]}>Valider</Text>
-            </TouchableOpacity>
-          )}
+
           {textContentType === 'password' && (
             <TouchableOpacity
               onPress={this.toggleSecureTextEntry}>
@@ -57,6 +43,11 @@ export default class Input extends Component {
           )}
         </View>
         <TextInput
+          ref={(ref) => {
+            this.refInput = ref
+          }}
+          onBlur={onBlur}
+          onSubmitEditing={onSubmitEditing}
           style={[styles.textInput]}
           textContentType={textContentType}
           placeholder={placeholder}

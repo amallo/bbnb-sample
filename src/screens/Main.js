@@ -8,7 +8,7 @@ function Main(props) {
     const { isLoading } = props
     return (
         <View style={{ flex: 1 }}>
-            <Loading animating={isLoading} />
+            <Loading animating={isLoading} {...props} />
             <Navigation />
         </View>
     )
