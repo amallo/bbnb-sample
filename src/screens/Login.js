@@ -13,7 +13,7 @@ import { login } from "../services"
 const MAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const ERR_EMAIL_INVALID = 'ERR_EMAIL_INVALID'
 const ERR_LOGIN_INVALID = 'ERR_LOGIN_INVALID'
-
+const NO_ERROR = ''
 const ErrorMessages = {
   [ERR_EMAIL_INVALID]: 'Email non valide !',
   [ERR_LOGIN_INVALID]: 'Identification impossible : le couple email/mot de passe est introuvable.'
@@ -47,10 +47,13 @@ class Login extends Component {
   }
   validateAndFocus = () => {
     const { email } = this.state
-    if (MAIL_REGEXP.test(email) === false) {
+    console.log('email', email)
+    if (!MAIL_REGEXP.test(email)) {
+      console.log('email invalide')
       this.setState({ error: ERR_EMAIL_INVALID });
     } else {
-      this.setState({ error: null });
+      console.log('email valide')
+      this.setState({ error: NO_ERROR });
       this.refPassword.focus()
     }
   };
@@ -69,7 +72,7 @@ class Login extends Component {
 
         // On efface les erreurs
         this.setState({
-          error: null
+          error: NO_ERROR
         })
 
         // On sauvegarde du token dans le local storage
@@ -97,7 +100,8 @@ class Login extends Component {
   }
   render() {
     const { error } = this.state
-    const isValidEmail = error == ERR_EMAIL_INVALID
+    const isValidEmail = error == NO_ERROR
+
     return (
       <View style={stylesCo.structGlobal} >
         <Text style={stylesCo.titre}>Connexion</Text>
