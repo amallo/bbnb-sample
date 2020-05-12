@@ -12,7 +12,7 @@ import Experiences from '../components/experiences';
 import Homes from '../components/homes';
 import Popular from '../components/popular';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Actions } from '../actions';
+import { requestGetListings, Actions } from '../actions';
 
 class ExploreContainer extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -26,43 +26,19 @@ class ExploreContainer extends Component {
     )
   });
 
+
   /**
-   * Nous n'avons plus besoin d'initialiser un state local au component.
-   * isLoading erst 
+   * Au componentDidMount() nous exécutions le side effect requestGetListings()
    */
-
   componentDidMount() {
-    const { setListings, loading } = this.props;
-
-    // Affichage du loading spinner par l'appel de l'action loading()
-    loading(true)
-
-    //Récupération des données contenus dans l'URL
-    return fetch('https://my-json-server.typicode.com/amallo/bbnb-sample/blob/master/experiences') // requête vers l'API
-      .then((response) => {
-        // Si un code erreur a été détecté on déclenche une erreur
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response;
-      })
-      .then(response => response.json())
-      .then(response => {
-        // On cache le loading spinner à la fin de la requête
-        loading(false)
-        setListings(response);
-      })
-      .catch((err) => {
-        console.log('An error occured', err)
-        // En cas d'erreur on cache le loading spinner également
-        loading(false)
-      })
+    const { requestGetListings } = this.props;
+    return requestGetListings()
   }
 
 
   render() {
     // isLoading est maintenant chargé depuis le reducer
-    const { categories, experiences, homes, popular, isLoading } = this.props;
+    const { categories, experiences, homes, popular } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <ScrollView>
@@ -100,7 +76,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setListings: results => dispatch(Actions.setListings(results)),
-  loading: (isLoading) => dispatch(Actions.loading(isLoading)),
+  requestGetListings: () => dispatch(requestGetListings())
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ExploreContainer);
