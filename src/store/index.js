@@ -12,9 +12,14 @@ const persistConfig = {
     storage: AsyncStorage,
 }
 
+const simpleLogger = store => next => action => {
+    console.log(action);
+    next(action);
+}
+
 // On liste ici les middleware dont on a besoin
 //
-const middlewares = [thunk]
+const middlewares = [thunk, simpleLogger]
 
 // composeWithDevTools() permet le debuggage dans React Native Debugger
 // 
