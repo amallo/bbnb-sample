@@ -16,10 +16,16 @@ const simpleLogger = store => next => action => {
     console.log(action);
     next(action);
 }
+const extendedLogger = store => next => action => {
+    console.log('previous state', store.getState())
+    const result = next(action)
+    console.log('next state', store.getState())
+    return result
+}
 
 // On liste ici les middleware dont on a besoin
 //
-const middlewares = [thunk, simpleLogger]
+const middlewares = [thunk, simpleLogger, extendedLogger]
 
 // composeWithDevTools() permet le debuggage dans React Native Debugger
 // 
