@@ -20,9 +20,10 @@ export const Actions = {
   logout: () => ({
     type: Types.LOGOUT
   }),
-  login: (token) => ({
+  login: (email, token) => ({
     type: Types.LOGIN,
     payload: {
+      email,
       token
     }
   })
@@ -63,7 +64,7 @@ export function requestLogin(email, password) {
         dispatch(Actions.loading(false))
 
         // On sauvegarde du token dans le local storage
-        dispatch(Actions.login(response.authorization))
+        dispatch(Actions.login(response.user.email, response.authorization))
       })
       .catch((err) => {
         dispatch(Actions.loading(false))

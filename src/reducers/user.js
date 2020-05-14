@@ -15,7 +15,8 @@ export default (state = initialState, action) => {
         case Types.LOGIN:
             return {
                 ...state,
-                token: action.payload.token
+                token: action.payload.token,
+                email: action.payload.email,
             }
         default:
             return state;

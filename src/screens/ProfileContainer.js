@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  TextInput
 } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
@@ -30,10 +31,12 @@ class ProfileContainer extends Component {
   }
 
   render() {
+    const { email } = this.props
     return (
       <ScrollView>
         <View>
           <Text style={styles.titres}>Profile container</Text>
+          <TextInput value={email}></TextInput>
           <TouchableOpacity onPress={this.doLogout}>
             <Text>Déconnexion</Text>
           </TouchableOpacity>
@@ -45,7 +48,7 @@ class ProfileContainer extends Component {
 
 
 const mapStateToProps = state => ({
-  token: state.user.token
+  email: state.user.email
 });
 
 const mapDispatchToProps = dispatch => ({
