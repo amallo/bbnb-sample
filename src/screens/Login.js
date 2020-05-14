@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import stylesCo from './stylesCo';
 import Input from '../components/Input'; //Intégration du composants Input
 import Error from '../components/Error'; //Intégration du composants Input
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Actions } from "../actions"
+import { Actions, requestLogin } from "../actions"
 import { connect } from 'react-redux';
 
 import { login } from "../services"
@@ -58,41 +57,25 @@ class Login extends Component {
     }
   };
   login = () => {
-    const { loading, setToken } = this.props
+    const { requestLogin } = this.props
     const { password, email } = this.state
 
-    // On affiche le loader
-    loading(true)
-
-    return login(email, password)
-      .then((response) => {
-
-        // On cache le loader
-        loading(false)
-
+    return requestLogin(email, password)
+      .then(() => {
         // On efface les erreurs
         this.setState({
           error: NO_ERROR
         })
-
-        // On sauvegarde du token dans le local storage
-        setToken(response.authorization)
+        // On navigue vers la home
         this.props.navigation.navigate('ExploreContainer')
-
       })
-
-      // Toutes les erreurs sont traitées dans le catch
       .catch(() => {
-
-        // On cache le loader
-        loading(false)
-
         // On stocke d'erreur
         this.setState({
           error: ERR_LOGIN_INVALID
         })
+        // Message d'erreur
         alert(ErrorMessages[ERR_LOGIN_INVALID])
-
       })
   }
   render() {
@@ -137,5 +120,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loading: (isLoading) => dispatch(Actions.loading(isLoading)),
   setToken: (token) => dispatch(Actions.login(token)),
+  requestLogin: (email, password) => dispatch(requestLogin(email, password)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
