@@ -5,6 +5,7 @@ export const Types = {
   LOADING: 'LOADING',
   LOGOUT: 'LOGOUT',
   LOGIN: 'LOGIN',
+  FILTER_EXPERIENCES: 'FILTER_EXPERIENCES'
 };
 export const Actions = {
   setListings: results => ({
@@ -25,6 +26,13 @@ export const Actions = {
     payload: {
       email,
       token
+    }
+  }),
+  filterExperiences: (criteria, sortCriteria) => ({
+    type: Types.FILTER_EXPERIENCES,
+    payload: {
+      criteria,
+      sort: sortCriteria
     }
   })
 };
