@@ -3,16 +3,19 @@ import {
   Text,
   View,
   ScrollView,
+  TextInput,
+  Button,
   TouchableOpacity,
 } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
-import Categories from '../components/categories'; //Intégration du composants Catégories
-import Experiences from '../components/experiences';
+import Categories from '../components/categories';
+import Experiences from '../components/Experiences';
 import Homes from '../components/homes';
 import Popular from '../components/popular';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { requestGetListings, Actions } from '../actions';
+import { filterExperiences } from '../reducers/listings';
 
 class ExploreContainer extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -38,9 +41,12 @@ class ExploreContainer extends Component {
 
   render() {
     // isLoading est maintenant chargé depuis le reducer
-    const { categories, experiences, homes, popular } = this.props;
+    const { categories, experiences, homes, popular, filterExperiences, filter, navigation } = this.props;
     return (
       <View style={{ flex: 1 }}>
+        <TextInput placeholder={"What are you looking for"} defaultValue={filter} onChangeText={filterExperiences}></TextInput>
+        <Button title={"Sort by title"} onPress={() => filterExperiences(filter, "title")}></Button>
+        <Button title={"Sort by type"} onPress={() => filterExperiences(filter, "type")}></Button>
         <ScrollView>
           <View>
             <Text style={styles.titres}>Explore Airbnb</Text>
@@ -49,7 +55,7 @@ class ExploreContainer extends Component {
           <View>
             <Text style={styles.titresExp}>Experiences</Text>
             <Text style={[styles.textVoirPlus]}>Voir tous ></Text>
-            <Experiences experiences={experiences} />
+            <Experiences experiences={experiences} onPress={(experience) => navigation.navigate("ExperienceDetail", experience)} />
           </View>
           <View>
             <Text style={styles.titresExp}>Homes</Text>
@@ -69,13 +75,15 @@ class ExploreContainer extends Component {
 }
 const mapStateToProps = state => ({
   categories: state.listings.categories,
-  experiences: state.listings.experiences,
+  experiences: filterExperiences(state),
+  filter: state.listings.filter,
   homes: state.listings.homes,
   popular: state.listings.popular,
   isLoading: state.app.isLoading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestGetListings: () => dispatch(requestGetListings())
+  requestGetListings: () => dispatch(requestGetListings()),
+  filterExperiences: (criteria, sort) => dispatch(Actions.filterExperiences(criteria, sort))
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ExploreContainer);

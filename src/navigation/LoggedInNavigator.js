@@ -4,25 +4,27 @@ import TripsContainer from '../screens/TripsContainer';
 import SavedContainer from '../screens/SavedContainer';
 import ProfileContainer from '../screens/ProfileContainer';
 import InboxContainer from '../screens/InboxContainer';
-import { StyleSheet, View } from 'react-native';
+import ExperienceDetailContainer from '../screens/ExperienceDetail';
+import { View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import React from 'react'
 
+import { createStackNavigator } from 'react-navigation-stack';
 
-export default createBottomTabNavigator(
+
+
+const HomeTabNavigator = createBottomTabNavigator(
   {
     Explore: {
       screen: ExploreContainer,
       navigationOptions: {
-        // A compléter
         tabBarLabel: 'EXPLORE',
         tabBarIcon: (
           <View>
             <Icon name="search" size={20} />
           </View>
-        ),
-        //tabBarIcon: SearchIcon, // On peut mettre ici une icone
+        )
 
       },
     },
@@ -63,3 +65,17 @@ export default createBottomTabNavigator(
 
   },
 );
+
+
+export default createStackNavigator({
+  Explore: {
+    screen: HomeTabNavigator,
+    navigationOptions: { headerShown: false }
+  },
+  ExperienceDetail: {
+    screen: ExperienceDetailContainer,
+    navigationOptions: { headerShown: true }
+  }
+}, {
+  headerMode: 'screen'
+})
