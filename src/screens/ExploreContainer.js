@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import styles from './styles';
 import { connect } from 'react-redux';
-import Categories from '../components/categories'; //Intégration du composants Catégories
-import Experiences from '../components/experiences';
+import Categories from '../components/categories';
+import Experiences from '../components/Experiences';
 import Homes from '../components/homes';
 import Popular from '../components/popular';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -41,7 +41,7 @@ class ExploreContainer extends Component {
 
   render() {
     // isLoading est maintenant chargé depuis le reducer
-    const { categories, experiences, homes, popular, filterExperiences, filter } = this.props;
+    const { categories, experiences, homes, popular, filterExperiences, filter, navigation } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <TextInput placeholder={"What are you looking for"} defaultValue={filter} onChangeText={filterExperiences}></TextInput>
@@ -55,7 +55,7 @@ class ExploreContainer extends Component {
           <View>
             <Text style={styles.titresExp}>Experiences</Text>
             <Text style={[styles.textVoirPlus]}>Voir tous ></Text>
-            <Experiences experiences={experiences} />
+            <Experiences experiences={experiences} onPress={(experience) => navigation.navigate("ExperienceDetail", experience)} />
           </View>
           <View>
             <Text style={styles.titresExp}>Homes</Text>
