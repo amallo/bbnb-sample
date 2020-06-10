@@ -1,11 +1,17 @@
-import { login as loginService } from "../services"
+import {
+  login as loginService,
+  registerFcm as registerFcmService,
+  requestFcmUserPermission as requestFcmUserPermissionService
+} from "../services"
 
 export const Types = {
   SET_LISTINGS: 'SET_LISTINGS',
   LOADING: 'LOADING',
   LOGOUT: 'LOGOUT',
   LOGIN: 'LOGIN',
-  FILTER_EXPERIENCES: 'FILTER_EXPERIENCES'
+  FILTER_EXPERIENCES: 'FILTER_EXPERIENCES',
+  FCM_TOKEN: 'FCM_TOKEN',
+  SET_PERMISSIONS: 'SET_PERMISSIONS'
 };
 export const Actions = {
   setListings: results => ({
@@ -33,6 +39,18 @@ export const Actions = {
     payload: {
       criteria,
       sort: sortCriteria
+    }
+  }),
+  fcmToken: (token) => ({
+    type: Types.FCM_TOKEN,
+    payload: {
+      token
+    }
+  }),
+  setPermissions: (permissions) => ({
+    type: Types.SET_PERMISSIONS,
+    payload: {
+      ...permissions
     }
   })
 };
@@ -78,5 +96,33 @@ export function requestLogin(email, password) {
         dispatch(Actions.loading(false))
         throw err
       })
+  }
+}
+
+function registerFcm() {
+  return function (dispatch) {
+    return registerFcmService()
+      .then((token) => {
+        console.log('FCM token is', token)
+        dispatch(Actions.fcmToken(token))
+      })
+  }
+}
+
+function requestFcmUserPermission() {
+  return function (dispatch) {
+    return requestFcmUserPermissionService()
+      .then((enabled) => {
+        dispatch(Actions.setPermissions({
+          notification: enabled
+        }))
+      })
+  }
+}
+
+export function bootstrap() {
+  return async function (dispatch) {
+    await requestFcmUserPermission()(dispatch)
+    await registerFcm()(dispatch)
   }
 }
