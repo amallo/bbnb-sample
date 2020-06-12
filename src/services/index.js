@@ -1,3 +1,24 @@
+import messaging from '@react-native-firebase/messaging';
+
+export async function requestFcmUserPermission() {
+    const { AuthorizationStatus } = messaging
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL;
+
+    return enabled
+}
+
+export async function registerFcm() {
+    // Register the device with FCM
+    await messaging().registerDeviceForRemoteMessages();
+
+    // Get and return the token
+    const token = await messaging().getToken();
+    return token
+}
+
+
 export const login = (email, password) => {
     return fetch('https://bbnb-booking.now.sh/api/users/signIn', {
         method: 'POST',
