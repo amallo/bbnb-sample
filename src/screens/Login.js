@@ -24,16 +24,20 @@ class Login extends Component {
     error: null
   };
 
-  static navigationOptions = ({ navigation }) => ({
-    header: () => (
-      <View style={stylesCo.containerConnect}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon size={20} style={stylesCo.iconclose} name="arrow-left"></Icon>
-        </TouchableOpacity>
-        <Text style={stylesCo.connect}>Mot de passe oublié ?</Text>
-      </View>
-    ),
-  });
+  componentDidMount() {
+    const { navigation } = this.props
+    navigation.setOptions({
+      header: () => (
+        <View style={stylesCo.containerConnect}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon size={20} style={stylesCo.iconclose} name="arrow-left"></Icon>
+          </TouchableOpacity>
+          <Text style={stylesCo.connect}>Mot de passe oublié ?</Text>
+        </View>
+      ),
+    })
+  }
+
   onChangeEmail = (email) => {
     this.setState({
       email

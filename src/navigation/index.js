@@ -1,26 +1,52 @@
+import React from 'react'
+
+import { connect } from 'react-redux'
 import LoggedOut from '../screens/LoggedOut';
 import Login from '../screens/Login';
-import AuthLoadingScreen from '../screens/AuthLoading';
-import LoggedInNavigator from './LoggedInNavigator';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import SplashScreen from 'react-native-splash-screen'
 
-// createStackNavigator() crée l'arbre de navigation
-// Le premier écran déclaré est l'écran de démarrage par défaut de l'application (ici LoginScreen)
-const AuthNavigator = createStackNavigator({
-  LoggedOut: { screen: LoggedOut },
-  Login: { screen: Login }
-})
-const MainStackNavigator = createSwitchNavigator(
-  {
-    AuthLoading: { screen: AuthLoadingScreen },
-    Auth: AuthNavigator,
-    ExploreContainer: LoggedInNavigator,
-  },
-  {
-    headerMode: 'screen', // Ce paramètre spécifie qu'on va définir des "header" (en-tête) pour chaque écran
-    // grâce à la variable "navigationOptions"
-  },
-);
-const App = createAppContainer(MainStackNavigator);
-export default App;
+
+import LoggedInNavigator from './LoggedInNavigator';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
+
+class MainStackNavigator extends React.Component {
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+  render() {
+    const { token } = this.props
+    return (
+      <Stack.Navigator headerMode={'none'}>
+        {token ? (
+          <Stack.Screen name="ExploreContainer" component={LoggedInNavigator} />
+        ) : (
+            <>
+              <Stack.Screen name="LoggedOut" component={LoggedOut} options={{ headerMode: 'screen' }} />
+              <Stack.Screen name="Login" component={Login} />
+            </>
+          )
+        }
+      </Stack.Navigator>
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  token: state.user.token
+});
+
+const ConnectedMainNavigator = connect(mapStateToProps)(MainStackNavigator)
+
+
+export default () => {
+  return (
+    <NavigationContainer>
+      <ConnectedMainNavigator />
+    </NavigationContainer>
+  )
+}

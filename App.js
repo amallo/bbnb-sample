@@ -1,3 +1,6 @@
+// We must put this at the top
+import 'react-native-gesture-handler';
+
 import React, { Component } from 'react';
 import MainScreen from './src/screens/Main';
 import { store, persistor } from './src/store';

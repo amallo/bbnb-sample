@@ -1,7 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {ScrollView} from 'react-native-gesture-handler';
-import {NavigationEvents} from 'react-navigation';
+import { StyleSheet } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const styles = StyleSheet.create({
   //CSS des Boutons
@@ -32,7 +30,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   //CSS de Fenêtre Modal
-  plusOptionsBtn: {flex: 1, justifyContent: 'center'},
+  plusOptionsBtn: { flex: 1, justifyContent: 'center' },
 
   //CSS de Champ
   champ: {

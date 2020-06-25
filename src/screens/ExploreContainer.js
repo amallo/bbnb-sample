@@ -18,16 +18,7 @@ import { requestGetListings, Actions } from '../actions';
 import { filterExperiences } from '../reducers/listings';
 
 class ExploreContainer extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    header: props => (
-      <View style={styles.containerConnect}>
-        <Icon size={20} style={styles.iconclose} name="close"></Icon>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.connect}>Connexion</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  });
+
 
 
   /**

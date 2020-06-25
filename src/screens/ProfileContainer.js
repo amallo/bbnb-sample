@@ -25,9 +25,11 @@ class ProfileContainer extends Component {
   });
 
   doLogout = () => {
-    const { logout, navigation } = this.props
+    const { logout } = this.props
+
+    // Lorsqu'on se logout le MainStackNavigator se raffraichît
+    // Comme le token est vide c'est LoggedOut qui est affiché
     logout()
-    navigation.navigate('Login')
   }
 
   render() {

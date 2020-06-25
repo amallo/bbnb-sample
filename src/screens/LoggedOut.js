@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Text, View, Image, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './styles';
 import componentsStyles from '../components/styles'; //Intégration du CSS du Bouton
@@ -10,16 +10,25 @@ export default class LoggedOut extends Component {
   state = {
     displayModale: false,
   };
-  static navigationOptions = ({navigation}) => ({
-    header: props => (
-      <View style={styles.containerConnect}>
-        <Icon size={35} style={styles.iconclose} name="close"></Icon>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.connect}>Connexion</Text>
-        </TouchableOpacity>
-      </View>
-    ),
-  });
+
+  componentDidMount() {
+    const { navigation } = this.props
+
+    /**
+     * avec react-navigation v5 on ne peut plus utiliser la variable statique
+     * navigationOptions on doit utilisation la fonction navigation.setOptions() à la place.
+     */
+    navigation.setOptions({
+      header: props => (
+        <View style={styles.containerConnect}>
+          <Icon size={35} style={styles.iconclose} name="close"></Icon>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.connect}>Connexion</Text>
+          </TouchableOpacity>
+        </View>
+      ),
+    })
+  }
   render() {
     return (
       <View style={styles.structGlobal}>
@@ -53,7 +62,7 @@ export default class LoggedOut extends Component {
         />
         <FenetreModal
           display={this.state.displayModale}
-          close={() => this.setState({displayModale: false})}
+          close={() => this.setState({ displayModale: false })}
         />
         <View>
           <TouchableOpacity
