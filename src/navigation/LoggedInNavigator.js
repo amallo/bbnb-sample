@@ -58,8 +58,8 @@ class HomeTabNavigator extends React.Component {
 const DetailNavigator = (props) => {
   return (
     <Stack.Navigator headerMode={'screen'}>
-      <Stack.Screen name="Explore" component={HomeTabNavigator} navigationOptions={{ headerShown: false }} />
-      <Stack.Screen name="ExperienceDetail" component={ExperienceDetailContainer} navigationOptions={{ headerShown: true }} />
+      <Stack.Screen name="Explore" component={HomeTabNavigator} navigationOptions={{ headerShown: false, }} />
+      <Stack.Screen name="ExperienceDetail" component={ExperienceDetailContainer} options={{ title: 'A nice experience' }} navigationOptions={{ headerShown: true }} />
     </Stack.Navigator>
   )
 }
